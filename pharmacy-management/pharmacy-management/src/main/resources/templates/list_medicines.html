@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Medicines - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex">
+        <!-- Sidebar (same as other pages) -->
+        <aside class="hidden md:flex md:flex-col w-72 bg-white border-r border-gray-200">
+            <!-- User Profile Section -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3 mb-3">
+                    <img class="h-10 w-10 rounded-full object-cover border-2 border-blue-600" 
+                         src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="Admin">
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-800" th:text="${username}"></h3>
+                        <p class="text-xs text-gray-500">Admin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 px-4 py-4 space-y-1">
+                <!-- Same navigation as other pages -->
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Main Menu</p>
+                
+                <a href="/admin/dashboard" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group transition-colors duration-200">
+                    <i class="fas fa-tachometer-alt text-gray-500 group-hover:text-blue-600 w-6"></i>
+                    <span class="mx-3">Dashboard</span>
+                </a>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Users Management</p>
+
+                <a href="/create-user" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group transition-colors duration-200">
+                    <i class="fas fa-user-plus text-gray-500 group-hover:text-blue-600 w-6 transition-colors duration-200"></i>
+                    <span class="mx-3">Create User</span>
+                </a>
+                <a href="/table-users" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group transition-colors duration-200">
+                    <i class="fas fa-table text-gray-500 group-hover:text-blue-600 w-6 transition-colors duration-200"></i>
+                    <span class="mx-3">Table Users</span>
+                </a>
+
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Medicines</p>
+
+                <a href="/add-medicine" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group transition-colors duration-200">
+                    <i class="fas fa-plus-circle text-gray-500 group-hover:text-blue-600 w-6 transition-colors duration-200"></i>
+                    <span class="mx-3">Add Medicine</span>
+                </a>
+
+                <a href="/list-medicines" class="flex items-center px-4 py-3 text-gray-700 bg-blue-50 rounded-lg group transition-colors duration-200">
+                    <i class="fas fa-list text-blue-600 w-6 transition-colors duration-200"></i>
+                    <span class="mx-3">List Medicines</span>
+                </a>
+
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Sales</p>
+
+                <a href="total-sales" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group transition-colors duration-200">
+                    <i class="fas fa-chart-line text-gray-500 group-hover:text-blue-600 w-6 transition-colors duration-200"></i>
+                    <span class="mx-3">Total Sales</span>
+                </a>
+
+                <a href="/logout" class="flex items-center px-4 py-3 mt-8 text-red-600 hover:bg-red-50 rounded-lg group transition-colors duration-200">
+                    <i class="fas fa-sign-out-alt text-red-500 w-6"></i>
+                    <span class="mx-3">Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navbar -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between h-16 px-6">
+                    <h1 class="text-xl font-semibold text-gray-800">Medicines List</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative" x-data="{ isOpen: false }">
+                            <button @click="isOpen = !isOpen" 
+                                    class="flex items-center space-x-2 text-gray-600 hover:text-gray-700 focus:outline-none">
+                                <img class="h-8 w-8 rounded-full object-cover" 
+                                     src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" 
+                                     alt="Admin">
+                                <span class="font-medium" th:text="${username}"></span>
+                                <i class="fas fa-chevron-down text-xs ml-2"></i>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div x-show="isOpen" 
+                                 @click.away="isOpen = false"
+                                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                                <a href="/update-profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user mr-2"></i>
+                                    Update Profile
+                                </a>
+                                <div class="border-t border-gray-100"></div>
+                                <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Medicine Cards Grid -->
+            <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Success/Error Messages -->
+                    <div th:if="${success}" class="notification mb-4 p-4 text-sm text-green-700 bg-green-100 rounded-lg">
+                        <span th:text="${success}"></span>
+                    </div>
+                    <div th:if="${error}" class="notification mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg">
+                        <span th:text="${error}"></span>
+                    </div>
+
+                    <!-- Grid of Medicine Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Medicine Card -->
+                        <div th:each="medicine : ${medicines}" 
+                             class="group bg-white rounded-xl overflow-hidden transform transition-all duration-300 
+                                    hover:scale-105 hover:-translate-y-1
+                                    shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]
+                                    hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)]
+                                    border border-gray-100">
+                            <!-- Medicine Image -->
+                            <div class="relative overflow-hidden">
+                                <img th:src="@{'/uploads/' + ${medicine.imageUrl}}" 
+                                     class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110"
+                                     alt="Medicine Image">
+                                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                            </div>
+                            
+                            <!-- Medicine Details -->
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2" th:text="${medicine.name}"></h3>
+                                <p class="text-sm text-gray-600 line-clamp-2" th:text="${medicine.description}"></p>
+                                
+                                <div class="mt-6 space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-baseline gap-2">
+                                            <span class="text-2xl font-bold text-blue-600" th:text="${'$' + medicine.price}"></span>
+                                            <span class="text-sm font-medium text-gray-500">per unit</span>
+                                        </div>
+                                        <span class="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-100 rounded-full"
+                                              th:text="${'Stock: ' + medicine.quantity}"></span>
+                                    </div>
+                                    
+                                    <!-- Action Buttons -->
+                                    <div class="flex space-x-3 pt-4 border-t border-gray-100">
+                                        <a th:href="@{/edit-medicine/{id}(id=${medicine.id})}"
+                                           class="flex-1 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 
+                                                  transition duration-200 rounded-lg hover:bg-blue-50 flex items-center justify-center">
+                                            <i class="fas fa-edit"></i>
+                                            <span class="ml-2">Edit</span>
+                                        </a>
+                                        <form th:action="@{/delete-medicine}" method="post" class="flex-1">
+                                            <input type="hidden" name="medicineId" th:value="${medicine.id}">
+                                            <button type="submit" 
+                                                    onclick="return confirm('Are you sure you want to delete this medicine?')"
+                                                    class="w-full px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 
+                                                           transition duration-200 rounded-lg hover:bg-red-50 flex items-center justify-center">
+                                                <i class="fas fa-trash"></i>
+                                                <span class="ml-2">Delete</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Notification Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all notifications
+            const notifications = document.querySelectorAll('.notification');
+            
+            notifications.forEach(notification => {
+                handleNotification(notification);
+            });
+        });
+
+        // Function to handle notification fade out
+        function handleNotification(notification) {
+            notification.style.transition = 'opacity 0.5s ease-in-out';
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        }
+
+        // Listen for new notifications
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.classList && 
+                        node.classList.contains('notification')) {
+                        handleNotification(node);
+                    }
+                });
+            });
+        });
+
+        // Start observing the document for new notifications
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    </script>
+
+    <!-- Add Alpine.js for dropdown functionality -->
+    <script src="//unpkg.com/alpinejs" defer></script>
+</body>
+</html> 
